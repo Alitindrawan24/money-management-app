@@ -128,7 +128,7 @@ export default {
         const dropdownOpen = ref(false)
         
         const darkMode = useCookie("dark-mode", {
-            default: true
+            default: () => true
         })
 
         return {

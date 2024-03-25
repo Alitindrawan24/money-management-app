@@ -30,7 +30,7 @@
 export default {
     setup() {
         const darkMode = useCookie("dark-mode", {
-            default: true
+            default: () => true
         })
 
         return {
