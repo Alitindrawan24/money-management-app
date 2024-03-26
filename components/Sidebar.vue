@@ -4,9 +4,9 @@
             class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0">
             <!-- SIDEBAR HEADER -->
             <div class="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-                <a href="index.html">
+                <NuxtLink to="/">
                     <img src="/images/logo/logo.svg" alt="Logo" />
-                </a>
+                </NuxtLink>
 
                 <button class="block lg:hidden" @click.stop="sidebarToggle = !sidebarToggle">
                     <svg class="fill-current" width="20" height="18" viewBox="0 0 20 18" fill="none"

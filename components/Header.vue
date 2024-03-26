@@ -30,9 +30,9 @@
                         </span>
                     </button>
                     <!-- Hamburger Toggle BTN -->
-                    <a class="block flex-shrink-0 lg:hidden" href="index.html">
+                    <NuxtLink class="block flex-shrink-0 lg:hidden" to="/">
                         <img src="/images/logo/logo-icon.svg" alt="Logo" />
-                    </a>
+                    </NuxtLink>
                 </div>
                 <div class="hidden sm:block">
                     <ul class="flex items-center gap-2 2xsm:gap-4">

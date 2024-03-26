@@ -13,5 +13,7 @@ export default defineNuxtConfig({
   },
   css: [
     '~/assets/css/custom.css',
+    '~/assets/css/satoshi.css',
+    '~/assets/css/style.css',
   ]
 })
