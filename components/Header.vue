@@ -77,8 +77,8 @@
                     <div class="relative">
                         <a class="flex items-center gap-4" href="#" @click.prevent="dropdownOpen = !dropdownOpen">
                             <span class="hidden text-right lg:block">
-                                <span class="block text-sm font-medium text-black dark:text-white">Thomas
-                                    Anree</span>
+                                <span class="block text-sm font-medium text-black dark:text-white">{{ user.name
+                                    }}</span>
                                 <span class="block text-xs font-medium"></span>
                             </span>
 
@@ -97,7 +97,7 @@
                         <!-- Dropdown Start -->
                         <div v-show="dropdownOpen"
                             class="absolute right-0 mt-4 flex w-62.5 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                            <button @click="this.$router.push('/login')" 
+                            <button @click="logout()"
                                 class="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
                                 <svg class="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -126,16 +126,66 @@ export default {
     setup() {
         const sidebarToggle = ref(true)
         const dropdownOpen = ref(false)
+        const router = useRouter()
+        const config = useRuntimeConfig()
+        const token = useCookie("access-token", {
+            default: () => "",
+        })
         
         const darkMode = useCookie("dark-mode", {
             default: () => true
         })
 
+        const user = reactive({
+            "name": "",
+            "email": "",
+        })
+
+        const logout = async() => {
+            await useFetch( config.public.apiHost +  '/logout', {
+                "method": "POST",
+                "headers": {
+                    "Authorization": "Bearer " + token.value
+                }
+            }).then((response) => {
+                if (response.status.value == "success") {
+
+                    token.value = null
+                    router.push('/login')
+                } else {
+                    alert(response.error.value?.data.message)
+                }
+            })
+        }
+
+        const getUser = async() => {
+            await useFetch(config.public.apiHost + '/user', {
+                "method": "GET",
+                "headers": {
+                    "Authorization": "Bearer " + token.value
+                }
+            }).then((response) => {
+                if (response.status.value == "success") {
+
+                    user.name = response.data.value?.name
+                    user.email = response.data.value?.email
+                } else {
+                    alert(response.error.value?.data.message)
+                }
+            })
+        }
+
         return {
             sidebarToggle,
             dropdownOpen,
-            darkMode
+            darkMode,
+            logout,
+            getUser,
+            user,
         }
+    },
+    mounted() {
+        this.getUser();
     }
 }
 </script>

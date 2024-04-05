@@ -172,6 +172,7 @@ export default {
     setup(){
         definePageMeta({
             layout: 'dashboard',
+            middleware: 'auth',
         })
 
         const page = useCookie("page", {

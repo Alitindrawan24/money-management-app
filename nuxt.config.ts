@@ -16,5 +16,10 @@ export default defineNuxtConfig({
         '~/assets/css/custom.css',
         '~/assets/css/satoshi.css',
         '~/assets/css/style.css',
-    ]
+    ],
+    runtimeConfig: {
+        public: {
+            apiHost: ''
+        }
+    }
 })

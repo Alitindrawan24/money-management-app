@@ -1,8 +1,7 @@
-
 import { NuxtLink } from '#build/components';
 <template>
     <div>
-        <Preloader/>
+        <Preloader />
         <!-- ===== Preloader End ===== -->
 
         <!-- ===== Page Wrapper Start ===== -->
@@ -31,12 +30,13 @@ import { NuxtLink } from '#build/components';
 
                                     <div class="w-full p-4 sm:p-12.5 xl:p-17.5">
 
-                                        <form action="/">
+                                        <form @submit.prevent="login()">
                                             <div class="mb-4">
                                                 <label for="email"
                                                     class="mb-2.5 block font-medium text-black dark:text-white">Email</label>
                                                 <div class="relative">
-                                                    <input id="email" type="email" placeholder="Enter your email"
+                                                    <input v-model="user.email" id="email" type="email"
+                                                        placeholder="Enter your email"
                                                         class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
 
                                                     <span class="absolute right-4 top-4">
@@ -57,7 +57,8 @@ import { NuxtLink } from '#build/components';
                                                 <label for="password"
                                                     class="mb-2.5 block font-medium text-black dark:text-white">Password</label>
                                                 <div class="relative">
-                                                    <input id="password" type="password" placeholder="Enter your password"
+                                                    <input v-model="user.password" id="password" type="password"
+                                                        placeholder="Enter your password"
                                                         class="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" />
 
                                                     <span class="absolute right-4 top-4">
@@ -103,3 +104,48 @@ import { NuxtLink } from '#build/components';
         <!-- ===== Page Wrapper End ===== -->
     </div>
 </template>
+
+<script>
+
+export default {
+    setup() {
+        definePageMeta({
+            middleware: "guest",
+        })
+
+        const router = useRouter()
+        const config = useRuntimeConfig()
+
+        const user = reactive({
+            "email": "",
+            "password": "",
+        })
+
+        const login = async() => {
+            try {
+                await useFetch(config.public.apiHost + '/login', {
+                    "method": "POST",
+                    "body": user,
+                }).then((response) => {
+                    if (response.status.value == "success") {
+                        const token = useCookie("access-token", {
+                            default: () => "",
+                        })
+                        token.value = response.data.value?.data.access_token
+                        router.push('/')
+                    } else {
+                        alert(response.error.value?.data.message)
+                    }
+                })
+            } catch (error) {
+                alert(error)
+            }
+        }
+
+        return {
+            user,
+            login
+        }
+    }
+}
+</script>
