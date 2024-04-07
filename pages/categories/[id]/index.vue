@@ -6,7 +6,7 @@
                 <!-- Breadcrumb Start -->
                 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-title-md2 font-bold text-black dark:text-white">
-                        Add Categories
+                        Show Categories
                     </h2>
                 </div>
                 <!-- Breadcrumb End -->
@@ -17,7 +17,7 @@
                     <div class="grid grid-cols gap-9 sm:grid-cols">
                         <div class="flex flex-col gap-9">
 
-                            <form @submit.prevent="submit()">
+                            <form>
                                 <!-- Input Fields -->
                                 <div
                                     class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -28,7 +28,7 @@
                                                 class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                 Name
                                             </label>
-                                            <input v-model="category.name" type="text" placeholder="Input category name"
+                                            <input disabled v-model="category.name" type="text" placeholder="Input category name"
                                                 class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary" />
                                         </div>
 
@@ -38,7 +38,7 @@
                                                 Type
                                             </label>
                                             <div class="relative z-20 bg-transparent dark:bg-form-input">
-                                                <select v-model="category.type"
+                                                <select disabled v-model="category.type"
                                                     class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                     :class="isOptionSelected && 'text-black dark:text-white'"
                                                     @change="isOptionSelected = true">
@@ -69,7 +69,7 @@
                                             </label>
                                             <label for="toggle4" class="flex cursor-pointer select-none items-center">
                                                 <div class="relative">
-                                                    <input v-model="category.status" type="checkbox" id="toggle4"
+                                                    <input disabled v-model="category.status" type="checkbox" id="toggle4"
                                                         class="sr-only" @change="switcherToggle = !switcherToggle" />
                                                     <div :class="switcherToggle && '!bg-primary'"
                                                         class="block h-8 w-14 rounded-full bg-black"></div>
@@ -78,19 +78,6 @@
                                                     </div>
                                                 </div>
                                             </label>
-                                        </div>
-
-                                        <div class="w-full">
-                                            <button type="submit"
-                                                class="flex float-right justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                                                <svg class="fill-current mr-2" width="18" height="18"
-                                                    viewBox="0 0 448 512" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M433.9 129.9l-83.9-83.9A48 48 0 0 0 316.1 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V163.9a48 48 0 0 0 -14.1-33.9zM224 416c-35.3 0-64-28.7-64-64 0-35.3 28.7-64 64-64s64 28.7 64 64c0 35.3-28.7 64-64 64zm96-304.5V212c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12V108c0-6.6 5.4-12 12-12h228.5c3.2 0 6.2 1.3 8.5 3.5l3.5 3.5A12 12 0 0 1 320 111.5z" />
-                                                </svg>
-                                                Save
-                                            </button>
                                         </div>
 
                                     </div>
@@ -122,7 +109,7 @@ export default {
         page.value = "categories";
 
 
-        const router = useRouter()
+        const route = useRoute()
 
         const switcherToggle = ref(true)
         const isOptionSelected = ref(true)
@@ -133,24 +120,30 @@ export default {
             "status": switcherToggle.value ? 1 : 0
         })
 
-        const submit = async() => {
-            category.status = switcherToggle.value ? 1 : 0
-
-            await useApi({
-                "method": "POST",
-                "path": "/categories",
-                "body": category
+        const fetchData = async() => {
+            const response = await useApi({
+                "method": "GET",
+                "path": "/categories/" + route.params.id ,
             })
 
-            router.push("/categories")
+            if (response.status == "success") {
+                category.name = response.data.name
+                category.type = response.data.type
+                category.status = response.data.status == "active" ? 1 : 0
+                switcherToggle.value = response.data.status == "active"
+            }
         }
+
 
         return {
             switcherToggle,
             isOptionSelected,
             category,
-            submit
+            fetchData
         }
+    },
+    mounted() {
+        this.fetchData()
     }
 }
 </script>

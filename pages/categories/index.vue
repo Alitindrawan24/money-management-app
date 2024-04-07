@@ -51,93 +51,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr v-for="(category, index) in categories" :key="index">
                                         <td
                                             class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                                            <h5 class="font-medium text-black dark:text-white">Salary</h5>
+                                            <h5 class="font-medium text-black dark:text-white">{{ category.name }}</h5>
                                         </td>
                                         <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
+                                            <p v-if="category.type == 'in'"
                                                 class="inline-flex rounded-full bg-success bg-opacity-10 px-3 py-1 text-sm font-medium text-success">
                                                 In
                                             </p>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
-                                                class="inline-flex rounded-full bg-success bg-opacity-10 px-3 py-1 text-sm font-medium text-success">
-                                                Active
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <ActionButton/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td
-                                            class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                                            <h5 class="font-medium text-black dark:text-white">
-                                                Bonus
-                                            </h5>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
-                                                class="inline-flex rounded-full bg-success bg-opacity-10 px-3 py-1 text-sm font-medium text-success">
-                                                In
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
-                                                class="inline-flex rounded-full bg-danger bg-opacity-10 px-3 py-1 text-sm font-medium text-danger">
-                                                Inactive
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <ActionButton/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td
-                                            class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                                            <h5 class="font-medium text-black dark:text-white">
-                                                Daily Food
-                                            </h5>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
+                                            <p v-if="category.type == 'out'"
                                                 class="inline-flex rounded-full bg-danger bg-opacity-10 px-3 py-1 text-sm font-medium text-danger">
                                                 Out
                                             </p>
                                         </td>
                                         <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
+                                            <p v-if="category.status == 'active'"
                                                 class="inline-flex rounded-full bg-success bg-opacity-10 px-3 py-1 text-sm font-medium text-success">
                                                 Active
                                             </p>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <ActionButton/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-5 pl-9 xl:pl-11">
-                                            <h5 class="font-medium text-black dark:text-white">
-                                                Self Reward
-                                            </h5>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p
-                                                class="inline-flex rounded-full bg-danger bg-opacity-10 px-3 py-1 text-sm font-medium text-danger">
-                                                Out
-                                            </p>
-                                        </td>
-                                        <td class="px-4 py-5">
-                                            <p
+                                            <p v-if="category.status == 'inactive'"
                                                 class="inline-flex rounded-full bg-danger bg-opacity-10 px-3 py-1 text-sm font-medium text-danger">
                                                 Inactive
                                             </p>
                                         </td>
-                                        <td class="px-4 py-5">
-                                            <ActionButton/>
+                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                                            <ActionButton :key="category.id" :fetchData="fetchData" :destroy="'/categories/' + category.id" :show="'/categories/' + category.id" :edit="'/categories/' + category.id +  '/edit'"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -146,54 +86,7 @@
                         </div>
                     </div>
 
-                    <div class>
-                        <nav class="float-right" aria-label="Page navigation example">
-                            <ul class="flex items-center -space-x-px h-8 text-sm">
-                                <li>
-                                    <a href="#"
-                                        class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 dark:border-strokedark dark:bg-boxdark bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                        <span class="sr-only">Previous</span>
-                                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="M5 1 1 5l4 4" />
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 dark:border-strokedark dark:bg-boxdark bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 dark:border-strokedark dark:bg-boxdark bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-                                </li>
-                                <li>
-                                    <a href="#" aria-current="page"
-                                        class="z-10 flex items-center justify-center px-3 h-8 leading-tight text-white bg-graydark dark:bg-meta-4 dark:border-strokedark font-bold border border-gray-300 dark:border-gray-300 dark:text-white">3</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 dark:border-strokedark dark:bg-boxdark bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 dark:border-strokedark dark:bg-boxdark bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 dark:border-strokedark dark:bg-boxdark bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-                                        <span class="sr-only">Next</span>
-                                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m1 9 4-4-4-4" />
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    <Pagination :meta="meta" :fetchData="fetchData"/>
 
                     <!-- ====== Table Three End -->
                 </div>
@@ -214,6 +107,28 @@ export default {
             default: () => ""
         })
         page.value = "categories";
+
+        const categories = ref({})
+        const meta = ref({})
+
+        const fetchData = async(url = null) => {
+            const response = await useApi({
+                method: "GET",
+                path: url ?? "/categories"
+            })
+
+            categories.value = response.data.data
+            meta.value = response.data.meta
+        }
+
+        return {
+            fetchData,
+            categories,
+            meta
+        }
+    },
+    mounted() {
+        this.fetchData();
     }
 }
 </script>

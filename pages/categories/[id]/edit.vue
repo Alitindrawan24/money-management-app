@@ -6,7 +6,7 @@
                 <!-- Breadcrumb Start -->
                 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-title-md2 font-bold text-black dark:text-white">
-                        Add Categories
+                        Edit Categories
                     </h2>
                 </div>
                 <!-- Breadcrumb End -->
@@ -122,6 +122,7 @@ export default {
         page.value = "categories";
 
 
+        const route = useRoute()
         const router = useRouter()
 
         const switcherToggle = ref(true)
@@ -132,6 +133,20 @@ export default {
             "type": "",
             "status": switcherToggle.value ? 1 : 0
         })
+
+        const fetchData = async() => {
+            const response = await useApi({
+                "method": "GET",
+                "path": "/categories/" + route.params.id ,
+            })
+
+            if (response.status == "success") {
+                category.name = response.data.name
+                category.type = response.data.type
+                category.status = response.data.status == "active" ? 1 : 0
+                switcherToggle.value = response.data.status == "active"
+            }
+        }
 
         const submit = async() => {
             category.status = switcherToggle.value ? 1 : 0
@@ -149,8 +164,12 @@ export default {
             switcherToggle,
             isOptionSelected,
             category,
-            submit
+            submit,
+            fetchData
         }
+    },
+    mounted() {
+        this.fetchData()
     }
 }
 </script>
