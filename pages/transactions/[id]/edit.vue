@@ -6,7 +6,7 @@
                 <!-- Breadcrumb Start -->
                 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-title-md2 font-bold text-black dark:text-white">
-                        Add Transactions
+                        Edit Transactions
                     </h2>
                 </div>
                 <!-- Breadcrumb End -->
@@ -133,6 +133,7 @@ export default {
         page.value = "transactions";
 
         const router = useRouter();
+        const route = useRoute();
 
         const type = ref("")
         const transaction = reactive({
@@ -142,10 +143,25 @@ export default {
             "description": ""
         })
 
+        const fetchData = async() => {
+            const response = await useApi({
+                "method": "GET",
+                "path": "/transactions/" + route.params.id,
+            })
+
+            if (response.status == "success") {
+                type.value = response.data.category.type
+                transaction.category_id = response.data.category.id
+                transaction.date = response.data.date
+                transaction.amount = response.data.amount
+                transaction.description = response.data.description
+            }
+        }
+
         const submit = async() => {
             await useApi({
-                "method": "POST",
-                "path": "/transactions",
+                "method": "PUT",
+                "path": "/transactions/" + route.params.id,
                 "body": transaction
             })
 
@@ -155,8 +171,12 @@ export default {
         return {
             type,
             transaction,
-            submit
+            submit,
+            fetchData
         }
+    },
+    mounted() {
+        this.fetchData()
     }
 }
 </script>

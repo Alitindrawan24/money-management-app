@@ -6,7 +6,7 @@
                 <!-- Breadcrumb Start -->
                 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-title-md2 font-bold text-black dark:text-white">
-                        Add Transactions
+                        Show Transactions
                     </h2>
                 </div>
                 <!-- Breadcrumb End -->
@@ -14,7 +14,7 @@
                 <!-- ====== Table Section Start -->
                 <div class="flex flex-col gap-6">
                     <!-- ====== Form Elements Section Start -->
-                    <form @submit.prevent="submit()">
+                    <form >
                         <div class="grid grid-cols gap-9 sm:grid-cols">
                             <div class="flex flex-col gap-9">
                                 <!-- Input Fields -->
@@ -28,7 +28,7 @@
                                                 Type
                                             </label>
                                             <div class="relative z-20 bg-transparent dark:bg-form-input">
-                                                <select v-model="type"
+                                                <select disabled v-model="type"
                                                     class="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-5 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
                                                     <option value="" disabled selected hidden class="text-body">
                                                         Select Type
@@ -56,7 +56,7 @@
                                                 Category
                                             </label>
                                             <div class="relative z-20 bg-transparent dark:bg-form-input">
-                                                <CategorySelect v-model="transaction.category_id" :key="type"
+                                                <CategorySelect disabled v-model="transaction.category_id" :key="type"
                                                     :type="type" />
                                             </div>
 
@@ -67,7 +67,7 @@
                                                 class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                 Date
                                             </label>
-                                            <input v-model="transaction.date" type="date"
+                                            <input disabled v-model="transaction.date" type="date"
                                                 placeholder="Input date transaction"
                                                 class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary" />
                                         </div>
@@ -77,7 +77,7 @@
                                                 class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                 Amount
                                             </label>
-                                            <CurrencyInput v-model="transaction.amount" />
+                                            <CurrencyInput disabled v-model="transaction.amount" />
                                         </div>
 
                                         <div>
@@ -85,22 +85,9 @@
                                                 class="mb-3 block text-sm font-medium text-black dark:text-white">
                                                 Description
                                             </label>
-                                            <textarea v-model="transaction.description" rows="6"
+                                            <textarea disabled v-model="transaction.description" rows="6"
                                                 placeholder="Input description"
                                                 class="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"></textarea>
-                                        </div>
-
-                                        <div class="w-full">
-                                            <button type="submit"
-                                                class="flex float-right justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                                                <svg class="fill-current mr-2" width="18" height="18"
-                                                    viewBox="0 0 448 512" fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M433.9 129.9l-83.9-83.9A48 48 0 0 0 316.1 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V163.9a48 48 0 0 0 -14.1-33.9zM224 416c-35.3 0-64-28.7-64-64 0-35.3 28.7-64 64-64s64 28.7 64 64c0 35.3-28.7 64-64 64zm96-304.5V212c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12V108c0-6.6 5.4-12 12-12h228.5c3.2 0 6.2 1.3 8.5 3.5l3.5 3.5A12 12 0 0 1 320 111.5z" />
-                                                </svg>
-                                                Save
-                                            </button>
                                         </div>
 
                                     </div>
@@ -132,7 +119,7 @@ export default {
         })
         page.value = "transactions";
 
-        const router = useRouter();
+        const route = useRoute();
 
         const type = ref("")
         const transaction = reactive({
@@ -142,21 +129,29 @@ export default {
             "description": ""
         })
 
-        const submit = async() => {
-            await useApi({
-                "method": "POST",
-                "path": "/transactions",
-                "body": transaction
+        const fetchData = async() => {
+            const response = await useApi({
+                "method": "GET",
+                "path": "/transactions/" + route.params.id,
             })
 
-            router.push("/transactions")
+            if (response.status == "success") {
+                type.value = response.data.category.type
+                transaction.category_id = response.data.category.id
+                transaction.date = response.data.date
+                transaction.amount = response.data.amount
+                transaction.description = response.data.description
+            }
         }
 
         return {
             type,
-            transaction,
-            submit
+            transaction, 
+            fetchData
         }
+    },
+    mounted() {
+        this.fetchData()
     }
 }
 </script>
