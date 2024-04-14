@@ -92,7 +92,7 @@
 
                                         <div class="w-full">
                                             <button :disabled="loading ? 'disabled' : false" type="submit"
-                                                class="flex float-right justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                                                class="flex float-right justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90">
                                                 <svg class="fill-current mr-2" width="18" height="18"
                                                     viewBox="0 0 448 512" fill="none"
                                                     xmlns="http://www.w3.org/2000/svg">

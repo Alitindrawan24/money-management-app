@@ -17,7 +17,7 @@
                     <div class="w-full">
                         <NuxtLink to="/transactions/create">
                             <button
-                                class="flex float-right justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                                class="flex float-right justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90">
                                 <svg class="fill-current mr-2" width="18" height="18" viewBox="0 0 448 512" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -53,39 +53,58 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(transaction, index) in transactions" :key="index">
-                                        <td
-                                            class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                                            <h5 class="font-medium text-black dark:text-white">{{ transaction.category.name }}</h5>
-                                        </td>
-                                        <td
-                                            class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                                            <h5 class="font-medium text-black dark:text-white">{{ transaction.date_formatted }}</h5>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <p v-if="transaction.category.type == 'in'"
-                                                class="inline-flex rounded-full bg-success bg-opacity-10 px-3 py-1 text-sm font-medium text-success">
-                                                {{ transaction.amount_formatted }}
-                                            </p>
-                                            <p v-if="transaction.category.type == 'out'"
-                                                class="inline-flex rounded-full bg-danger bg-opacity-10 px-3 py-1 text-sm font-medium text-danger">
-                                                {{ transaction.amount_formatted }}
-                                            </p>
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            {{ transaction.description }}
-                                        </td>
-                                        <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                                            <ActionButton :key="transaction.id" :fetchData="fetchData" :destroy="'/transactions/' + transaction.id" :show="'/transactions/' + transaction.id" :edit="'/transactions/' + transaction.id +'/edit'"/>
-                                        </td>
-                                    </tr>
+                                    <template v-if="loading">
+                                        <tr>
+                                            <td colspan="5"
+                                                class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11 text-center">
+                                                Load data...</td>
+                                        </tr>
+                                    </template>
+                                    <template v-else-if="transactions.length > 0">
+                                        <tr v-for="(transaction, index) in transactions" :key="index">
+                                            <td
+                                                class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                                                <h5 class="font-medium text-black dark:text-white">{{
+                                        transaction.category.name }}</h5>
+                                            </td>
+                                            <td
+                                                class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                                                <h5 class="font-medium text-black dark:text-white">{{
+                                        transaction.date_formatted }}</h5>
+                                            </td>
+                                            <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                                                <p v-if="transaction.category.type == 'in'"
+                                                    class="inline-flex rounded-full bg-success bg-opacity-10 px-3 py-1 text-sm font-medium text-success">
+                                                    {{ transaction.amount_formatted }}
+                                                </p>
+                                                <p v-if="transaction.category.type == 'out'"
+                                                    class="inline-flex rounded-full bg-danger bg-opacity-10 px-3 py-1 text-sm font-medium text-danger">
+                                                    {{ transaction.amount_formatted }}
+                                                </p>
+                                            </td>
+                                            <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                                                {{ transaction.description }}
+                                            </td>
+                                            <td class="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                                                <ActionButton :key="transaction.id" :fetchData="fetchData"
+                                                    :destroy="'/transactions/' + transaction.id"
+                                                    :show="'/transactions/' + transaction.id"
+                                                    :edit="'/transactions/' + transaction.id + '/edit'" />
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <td colspan="5"
+                                            class="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11 text-center">
+                                            Data Empty</td>
+                                    </template>
                                 </tbody>
                             </table>
 
                         </div>
                     </div>
 
-                    <Pagination :meta="meta" :fetchData="fetchData"/>
+                    <Pagination :meta="meta" :fetchData="fetchData" />
 
                     <!-- ====== Table Three End -->
                 </div>
@@ -109,8 +128,10 @@ export default {
 
         const transactions = ref({})
         const meta = ref({})
+        const loading = ref(true);
 
         const fetchData = async(url = null) => {
+            loading.value = true
             const response = await useApi({
                 "method": "GET",
                 "path": url ?? "/transactions"
@@ -118,12 +139,14 @@ export default {
 
             transactions.value = response.data.data
             meta.value = response.data.meta
+            loading.value = false
         }
 
         return {
             transactions,
             meta,
-            fetchData
+            fetchData,
+            loading
         }
     },
     mounted() {
