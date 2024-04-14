@@ -1,11 +1,11 @@
 <template>
     <div>
-        <header class="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
+        <header class="sticky top-0 z-40 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
             <div class="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
                 <div class="flex items-center gap-2 sm:gap-4 lg:hidden">
                     <!-- Hamburger Toggle BTN -->
                     <button
-                        class="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+                        class="z-41 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
                         @click.stop="sidebarToggle = !sidebarToggle">
                         <span class="relative block h-5.5 w-5.5 cursor-pointer">
                             <span class="du-block absolute right-0 h-full w-full">
@@ -142,37 +142,27 @@ export default {
         })
 
         const logout = async() => {
-            await useFetch( config.public.apiHost +  '/logout', {
+            const response = await useApi({
                 "method": "POST",
-                "headers": {
-                    "Authorization": "Bearer " + token.value
-                }
-            }).then((response) => {
-                if (response.status.value == "success") {
-
-                    token.value = null
-                    router.push('/login')
-                } else {
-                    alert(response.error.value?.data.message)
-                }
+                "path": "/logout"
             })
+
+            if (response.status == "success") {
+                token.value = null
+                router.push('/login')
+            }
         }
 
         const getUser = async() => {
-            await useFetch(config.public.apiHost + '/user', {
+            const response = await useApi({
                 "method": "GET",
-                "headers": {
-                    "Authorization": "Bearer " + token.value
-                }
-            }).then((response) => {
-                if (response.status.value == "success") {
-
-                    user.name = response.data.value?.name
-                    user.email = response.data.value?.email
-                } else {
-                    alert(response.error.value?.data.message)
-                }
+                "path": "/user"
             })
+
+            if (response) {
+                user.name = response.name
+                user.email = response.email
+            }
         }
 
         return {

@@ -81,7 +81,7 @@
                                         </div>
 
                                         <div class="w-full">
-                                            <button type="submit"
+                                            <button :disabled="loading ? 'disabled' : false" type="submit"
                                                 class="flex float-right justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
                                                 <svg class="fill-current mr-2" width="18" height="18"
                                                     viewBox="0 0 448 512" fill="none"
@@ -123,9 +123,11 @@ export default {
 
 
         const router = useRouter()
+        const toast = useToast()
 
         const switcherToggle = ref(true)
         const isOptionSelected = ref(true)
+        const loading = ref(false)
 
         const category = reactive({
             "name": "",
@@ -134,22 +136,33 @@ export default {
         })
 
         const submit = async() => {
+            loading.value = true
             category.status = switcherToggle.value ? 1 : 0
 
             await useApi({
                 "method": "POST",
                 "path": "/categories",
                 "body": category
+            }).then((response) => {
+                if (response.status == "success") {
+                    toast.add({"title": response.message})
+                    router.push("/categories")
+                } else {
+                    toast.add({"title": response.message, "color": "red"})
+                    loading.value = false
+                }
+            }).catch((error) => {
+                toast.add({"title": error.message, "color": "red"})
+                loading.value = false
             })
-
-            router.push("/categories")
         }
 
         return {
             switcherToggle,
             isOptionSelected,
             category,
-            submit
+            submit,
+            loading
         }
     }
 }

@@ -1,7 +1,8 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
+import type { Config } from 'tailwindcss'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
-module.exports = {
-  content: ['./pages/**/*.{vue}'],
+export default <Partial<Config>>{
+  content: ['./pages/**/*.vue'],
   darkMode: 'class',
   theme: {
     fontFamily: {
@@ -25,9 +26,35 @@ module.exports = {
         bodydark1: '#DEE4EE',
         bodydark2: '#8A99AF',
         primary: '#3C50E0',
+        green: {
+            50: '#3C50E0',
+            100: '#3C50E0',
+            200: '#3C50E0',
+            300: '#3C50E0',
+            400: '#3C50E0',
+            500: '#3C50E0',
+            600: '#3C50E0',
+            700: '#3C50E0',
+            800: '#3C50E0',
+            900: '#3C50E0',
+            950: '#3C50E0'
+        },
         secondary: '#80CAEE',
         stroke: '#E2E8F0',
         gray: '#EFF4FB',
+        cool:{
+            50: '#EFF4FB',
+            100: '#EFF4FB',
+            200: '#EFF4FB',
+            300: '#EFF4FB',
+            400: '#EFF4FB',
+            500: '#EFF4FB',
+            600: '#EFF4FB',
+            700: '#EFF4FB',
+            800: '#EFF4FB',
+            900: '#EFF4FB',
+            950: '#EFF4FB'
+        },
         graydark: '#333A48',
         'gray-2': '#F7F9FC',
         'gray-3': '#FAFAFA',

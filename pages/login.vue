@@ -115,6 +115,7 @@ export default {
 
         const router = useRouter()
         const config = useRuntimeConfig()
+        const toast = useToast()
 
         const user = reactive({
             "email": "",
@@ -134,11 +135,11 @@ export default {
                         token.value = response.data.value?.data.access_token
                         router.push('/')
                     } else {
-                        alert(response.error.value?.data.message)
+                        toast.add({"title":response.error.value?.data.message})
                     }
                 })
             } catch (error) {
-                alert(error)
+                toast.add({"title":error})
             }
         }
 

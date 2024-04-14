@@ -159,6 +159,7 @@ export default {
 
         const router = useRouter()
         const config = useRuntimeConfig()
+        const toast = useToast()
 
         const user = reactive({
             "name": "",
@@ -183,11 +184,11 @@ export default {
 
                         router.push('/')
                     } else {
-                        alert(response.error.value?.data.message)
+                        toast.add({"title":response.error.value?.data.message})
                     }
                 })
             } catch (error) {
-                alert(error)
+                toast.add({"title":error})
             }
 
         }

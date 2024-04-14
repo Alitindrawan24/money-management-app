@@ -2,9 +2,7 @@
 export default defineNuxtConfig({
     ssr: false,
     devtools: { enabled: false },
-    modules: [
-        '@nuxtjs/tailwindcss'
-    ],
+    modules: ["@nuxt/ui",'@nuxtjs/tailwindcss'],
     devServer: {
         port: 3001
     },

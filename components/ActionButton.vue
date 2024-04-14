@@ -20,7 +20,7 @@
                         fill />
                 </svg>
             </NuxtLink>
-            <button @click="remove()" class="hover:text-primary">
+            <button @click="isOpen = true" class="hover:text-primary">
                 <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -39,19 +39,73 @@
             </button>
         </div>
     </div>
+
+    <div>
+        <UModal v-model="isOpen">
+            <div class="justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                <div class="relative w-full max-w-2xl max-h-full">
+                    <!-- Modal content -->
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <!-- Modal header -->
+                        <div
+                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                Are you sure to delete this data ?
+                            </h3>
+                            <button type="button" @click="isOpen = false"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                data-modal-hide="default-modal">
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="p-4 md:p-5 space-y-4">
+                            <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                                Warning: Data will be lost permanently
+                            </p>
+                        </div>
+                        <!-- Modal footer -->
+                        <div
+                            class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                            <button @click="remove()" :disabled="deleting ? 'disabled' : false" type="button"
+                                class="text-white bg-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">I
+                                <span v-if="deleting">Deleting...</span>
+                                <span v-else>Yes, delete it</span>
+                            </button>
+                            <button @click="isOpen = false" type="button"
+                                class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </UModal>
+    </div>
+
 </template>
 
 <script setup>
 
 const { edit, show, destroy, fetchData } = defineProps(["edit", "show", "destroy", "fetchData"]);
+const isOpen = ref(false)
+const deleting = ref(false)
+const toast = useToast()
 
 const remove = async() => {
+    deleting.value = true;
     const response = await useApi({
         "method": "DELETE",
         "path": destroy,
     })
 
+    deleting.value = false;
     if (response.status == "success") {
+        isOpen.value = false;
+        toast.add({"title": response.message})
         fetchData()
     }
 }
