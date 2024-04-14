@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'dark text-bodydark bg-boxdark-2': darkMode === true }">
+    <div :class="{ 'dark text-bodydark bg-boxdark-2': darkMode }">
         <!-- ===== Preloader Start ===== -->
         <Preloader></Preloader>
         <!-- ===== Preloader End ===== -->
@@ -29,8 +29,14 @@
 <script>
 export default {
     setup() {
-        const darkMode = useCookie("dark-mode", {
-            default: () => true
+        const colorMode = useColorMode()
+        const darkMode = computed({
+            get () {
+                return colorMode.value === 'dark'
+            },
+            set () {
+                colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+            }
         })
 
         return {

@@ -127,13 +127,18 @@ export default {
         const sidebarToggle = ref(true)
         const dropdownOpen = ref(false)
         const router = useRouter()
-        const config = useRuntimeConfig()
+        const colorMode = useColorMode()
+        const darkMode = computed({
+            get () {
+                return colorMode.value === 'dark'
+            },
+            set () {
+                colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+            }
+        })
+
         const token = useCookie("access-token", {
             default: () => "",
-        })
-        
-        const darkMode = useCookie("dark-mode", {
-            default: () => true
         })
 
         const user = reactive({
